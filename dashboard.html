@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard – SiteGuide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+  html, body { height: 100%; }
+  body { display:flex; flex-direction:column; background:#f9f9f9; color:#111; }
+  header { background:#fff; padding:20px; text-align:center; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
+  header h1 { font-size:2rem; }
+  main { flex:1; padding:40px 20px; max-width:1000px; margin:0 auto; }
+  h2 { font-size:1.75rem; color:#1a73e8; margin-bottom:20px; }
+  .domain-list { list-style:none; padding:0; }
+  .domain-item {
+    background:#fff;
+    padding:15px 20px;
+    margin-bottom:12px;
+    border-radius:8px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+    transition:transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .domain-item:hover {
+    transform:translateY(-4px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+  }
+  footer { margin-top:auto; text-align:center; padding:20px; font-size:0.85rem; color:#777; background:#f9f9f9; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>SiteGuide Dashboard</h1>
+</header>
+
+<main>
+  <h2>Your Controlled Domains</h2>
+  <ul class="domain-list">
+    <li class="domain-item">example.com</li>
+    <li class="domain-item">demo.example.com</li>
+    <li class="domain-item">testsite.com</li>
+    <!-- Add more dynamically later -->
+  </ul>
+</main>
+
+<footer>
+  © 2026 SiteGuide. All rights reserved.
+</footer>
+
+</body>
+</html>

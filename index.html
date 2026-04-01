@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SiteGuide – Search, find & highlight answers instantly</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset & Base */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: #111; line-height: 1.6; background: #f9f9f9; }
+    a { text-decoration: none; color: inherit; }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+    /* Logo */
+    .logo {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .logo-site {
+      background: linear-gradient(135deg, #1a73e8, #4285f4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
+    .logo-guide {
+      background: linear-gradient(135deg, #fbb034, #ff8800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
+
+    /* Hero Section */
+    header {
+      background: #fff;
+      padding: 100px 20px 80px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      color: #111;
+      line-height: 1.2;
+    }
+    header h1 .glow {
+      animation: glow 2s infinite alternate;
+    }
+    header p {
+      font-size: 1.25rem;
+      margin-bottom: 40px;
+      color: #555;
+    }
+
+    /* Buttons */
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .cta-btn {
+      display: inline-block;
+      padding: 15px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .primary-btn {
+      background: #1a73e8;
+      color: #fff;
+      border: none;
+    }
+    .secondary-btn {
+      background: transparent;
+      color: #1a73e8;
+      border: 2px solid #1a73e8;
+    }
+
+    /* Button hover effect like info-box */
+    .cta-btn:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    /* Highlight */
+    .highlight {
+      display: inline-block;
+      position: relative;
+      background-color: rgba(255,215,80,0.35);
+      outline: 2px solid rgba(255,185,50,0.95);
+      box-shadow: 0 0 0 6px rgba(255,220,120,0.2);
+      border-radius: 3px;
+      padding: 0 6px;
+      transition: all 0.4s ease, opacity 0.4s ease;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 4px rgba(255,185,50,0.7); }
+      to { text-shadow: 0 0 12px rgba(255,185,50,1); }
+    }
+
+    /* Info Boxes / How it works */
+    .info-section {
+      padding: 80px 20px;
+      text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+    .info-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      flex: 1 1 250px;
+      max-width: 300px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .info-box:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+    .info-box h3 { font-size: 1.25rem; margin-bottom: 15px; color: #1a73e8; }
+    .info-box p { color: #555; }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .info-section { flex-direction: column; align-items: center; }
+      header h1 { font-size: 2.25rem; }
+      .logo { font-size: 2rem; }
+      .cta-buttons { flex-direction: column; gap: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <header>
+    <div class="container">
+      <div class="logo">
+        <span class="logo-site glow">Site</span><span class="logo-guide glow">Guide</span>
+      </div>
+      <h1>
+        🔍 Search, find & <span class="highlight">highlight</span> answers instantly
+      </h1>
+      <p>Enable fast, effortless navigation on your website — just one line of code, no backend needed.</p>
+
+      <!-- Updated Buttons -->
+      <div class="cta-buttons">
+        <a href="login.html" class="cta-btn primary-btn">Get Started</a>
+        <a href="demo.html" class="cta-btn secondary-btn">Try Demo</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Info Boxes Section -->
+  <section class="info-section" id="info">
+    <div class="info-box">
+      <h3>Effortless Integration</h3>
+      <p>Add SiteGuide to your website in seconds using a single script.</p>
+    </div>
+    <div class="info-box">
+      <h3>Smart Search</h3>
+      <p>Provide your users with instant answers, guiding them to the exact page or quote they need.</p>
+    </div>
+    <div class="info-box">
+      <h3>Highlight Results</h3>
+      <p>Make important information pop with beautifully highlighted search results that catch the eye.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 SiteGuide. All rights reserved.</p>
+  </footer>
+</body>
+</html>

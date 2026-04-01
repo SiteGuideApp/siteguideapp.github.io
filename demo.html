@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sunrise Café Demo – Fresh Coffee & Pastries</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #fdfdfd; color: #222; line-height: 1.6; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* Demo loader overlay */
+    #demo-loader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #1a73e8;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      font-family: 'Inter', sans-serif;
+      transition: opacity 0.5s ease;
+    }
+    #demo-loader.hidden { opacity: 0; pointer-events: none; }
+    #demo-loader h2 { font-size: 1.8rem; margin-bottom: 20px; text-align: center; color: white }
+    #demo-loader .progress-bar {
+      width: 300px;
+      height: 12px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    #demo-loader .progress-bar-inner {
+      width: 0%;
+      height: 100%;
+      background: #ffcd38;
+      border-radius: 6px;
+      animation: loadProgress 2s forwards;
+    }
+    @keyframes loadProgress {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    /* Floating informal help bar */
+    .help-bar {
+      position: sticky;
+      top: 10px;
+      background: rgba(26, 115, 232, 0.85);
+      color: #fff;
+      padding: 10px 20px;
+      margin: 10px auto;
+      max-width: 1000px;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.95rem;
+      z-index: 999;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: opacity 0.3s ease;
+    }
+    .help-bar span { font-weight: 400; }
+    .help-bar .close-btn {
+      cursor: pointer;
+      font-weight: 700;
+      padding-left: 15px;
+    }
+    .help-bar.hidden { opacity: 0; pointer-events: none; }
+
+    /* Header */
+    header { background: #fff8f0; padding: 40px 20px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+    header h1 { font-size: 2.5rem; color: #d97706; margin-bottom: 10px; }
+    header p { font-size: 1.2rem; color: #555; }
+
+    /* Navigation */
+    nav { display: flex; justify-content: center; gap: 30px; margin-top: 15px; font-weight: 600; }
+    nav a:hover { color: #d97706; }
+
+    /* Sections */
+    section { padding: 60px 20px; max-width: 1000px; margin: 0 auto; }
+    h2 { font-size: 2rem; color: #1a73e8; margin-bottom: 20px; }
+
+    /* Menu */
+    .menu-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item-name { font-weight: 600; }
+    .menu-item-price { font-weight: 500; color: #d97706; }
+    .menu-item-desc { font-size: 0.95rem; color: #555; margin-top: 4px; }
+
+    /* About / History */
+    .about p, .history p { max-width: 800px; margin-bottom: 15px; color: #555; }
+
+    /* Contact */
+    .contact p { margin-bottom: 10px; }
+    .contact a { color: #1a73e8; font-weight: 600; }
+
+    /* Footer */
+    footer { text-align: center; padding: 40px 20px; background: #fff8f0; color: #777; font-size: 0.9rem; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      h2 { font-size: 1.5rem; }
+      .help-bar { font-size: 0.85rem; padding: 8px 16px; }
+      #demo-loader h2 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+    <script src="../Widget/widget.js" async client-id="liveDemo" theme="WarmOrange"></script>
+  <!-- Demo loader overlay -->
+  <div searchIgnore id="demo-loader">
+    <h2>Loading demo site… sit tight!</h2>
+    <div class="progress-bar">
+      <div class="progress-bar-inner"></div>
+    </div>
+  </div>
+
+  <!-- Floating informal help bar -->
+  <div class="help-bar" id="helpBar">
+    <span searchIgnore>Try searching for “Cappuccino price” or “Vegan-friendly" in the search widget in the bottom-right corner!</span>
+    <span class="close-btn" id="closeHelp">×</span>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <h1>Sunrise Café Demo</h1>
+    <p>Fresh coffee, pastries & a cozy place to relax</p>
+    <nav>
+      <a href="#menu">Menu</a>
+      <a href="#history">History</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Menu Section -->
+  <section id="menu">
+    <h2>Our Menu</h2>
+    <div class="menu-item">
+      <div>
+        <span class="menu-item-name">Cappuccino</span>
+        <div class="menu-item-desc">Espresso with steamed milk and a light layer of foam. Beans: Arabica, medium roast.</div>
+      </div>
+      <span class="menu-item-price">$4.50</span>
+    </div>
+    <div class="menu-item">
+      <div>
+        <span class="menu-item-name">Latte</span>
+        <div class="menu-item-desc">Espresso with steamed milk, optional syrups: vanilla, caramel, hazelnut. Dairy: whole milk.</div>
+      </div>
+      <span class="menu-item-price">$4.00</span>
+    </div>
+    <div class="menu-item">
+      <div>
+        <span class="menu-item-name">Espresso</span>
+        <div class="menu-item-desc">Pure espresso shot, rich flavor, beans: Arabica medium roast, 7g per shot.</div>
+      </div>
+      <span class="menu-item-price">$3.00</span>
+    </div>
+    <div class="menu-item">
+      <div>
+        <span class="menu-item-name">Blueberry Muffin</span>
+        <div class="menu-item-desc">Organic blueberries, sugar, flour, eggs, butter. Baked fresh daily.</div>
+      </div>
+      <span class="menu-item-price">$3.25</span>
+    </div>
+    <div class="menu-item">
+      <div>
+        <span class="menu-item-name">Croissant</span>
+        <div class="menu-item-desc">Flaky buttery pastry, optional fillings: chocolate, almond. Made with European butter.</div>
+      </div>
+      <span class="menu-item-price">$2.50</span>
+    </div>
+    <div class="menu-item">
+      <div>
+        <span class="menu-item-name">Vegan Banana Bread</span>
+        <div class="menu-item-desc">Bananas, oat flour, almond milk, coconut oil. Dairy-free, vegan-friendly.</div>
+      </div>
+      <span class="menu-item-price">$3.75</span>
+    </div>
+  </section>
+
+  <!-- History Section -->
+  <section id="history">
+    <h2>Our History</h2>
+    <p>Sunrise Café opened in 2015 to serve freshly roasted coffee and homemade pastries. Founders Emma and Lucas wanted a welcoming space for the community.</p>
+    <p>We’ve expanded to include vegan, gluten-free, and seasonal specialties. Our coffee beans are sourced sustainably and roasted locally.</p>
+    <p>Community events, live music, and workshops are hosted regularly. Our café promotes connection, comfort, and creativity.</p>
+  </section>
+
+  <!-- About Section -->
+  <section id="about">
+    <h2>About Us</h2>
+    <p>Our baristas are trained in espresso extraction and latte art. Every cup is crafted with care.</p>
+    <p>Pastries baked fresh daily. Croissants, muffins, and specialty breads use high-quality ingredients.</p>
+    <p>Sustainability is key: compostable cups, local ingredients, and recycling programs.</p>
+    <p>Catering available for businesses and events: coffee service, pastries, and snacks.</p>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Contact Us</h2>
+    <p>📍 123 Main Street, Yourtown</p>
+    <p>📞 (555) 123-4567</p>
+    <p>✉️ <a href="mailto:info@sunrisecafe.com">info@sunrisecafe.com</a></p>
+    <p>🕒 Mon-Fri: 7am – 6pm | Sat-Sun: 8am – 4pm</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2026 Sunrise Café Demo. All rights reserved.</p>
+  </footer>
+
+    <script>
+    const demoLoader = document.getElementById('demo-loader');
+
+    window.addEventListener('load', () => {
+        // Check if user came from main page
+        const ref = document.referrer;
+        const mainPageURL = "http://127.0.0.1:5500/Website/index.html"; // replace with your actual main page URL
+
+        if (ref.startsWith(mainPageURL)) {
+        // Show loader for 2s
+        setTimeout(() => {
+            demoLoader.classList.add('hidden');
+        }, 2000);
+        } else {
+        // Hide loader immediately
+        demoLoader.classList.add('hidden');
+        }
+    });
+
+    // Dismiss help bar
+    document.getElementById('closeHelp').addEventListener('click', () => {
+        document.getElementById('helpBar').classList.add('hidden');
+    });
+    </script>
+
+</body>
+</html>
