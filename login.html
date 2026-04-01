@@ -1,85 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login – SiteGuide</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login – SiteGuide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-<!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Google Identity Services -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-  html, body { height: 100%; }
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+    html, body { height: 100%; }
 
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background: #f9f9f9;
-    color: #111;
-  }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: #f9f9f9;
+      color: #111;
+    }
 
-  .content-wrapper {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-  }
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-  .login-container {
-    background: #fff;
-    padding: 50px 40px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    text-align: center;
-    max-width: 400px;
-    width: 100%;
-  }
+    .login-container {
+      background: #fff;
+      padding: 50px 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
 
-  .logo {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
-  .logo-site {
-    background: linear-gradient(135deg, #1a73e8, #4285f4);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-  }
-  .logo-guide {
-    background: linear-gradient(135deg, #fbb034, #ff8800);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: inline-block;
-  }
+    .logo {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .logo-site {
+      background: linear-gradient(135deg, #1a73e8, #4285f4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+    .logo-guide {
+      background: linear-gradient(135deg, #fbb034, #ff8800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
 
-  h1 {
-    font-size: 2rem;
-    margin-bottom: 15px;
-  }
-  p {
-    color: #555;
-    margin-bottom: 30px;
-    font-size: 1rem;
-  }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+    }
+    p {
+      color: #555;
+      margin-bottom: 30px;
+      font-size: 1rem;
+    }
 
-  footer {
-    text-align: center;
-    padding: 20px;
-    font-size: 0.85rem;
-    color: #777;
-    background: #f9f9f9;
-  }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.85rem;
+      color: #777;
+      background: #f9f9f9;
+    }
 
-  @media(max-width:480px){
-    .login-container { padding: 40px 20px; }
-    h1 { font-size: 1.75rem; }
-  }
-</style>
+    /* Center the Google Sign-In Button */
+    .g-id-signin-container {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    @media(max-width:480px){
+      .login-container { padding: 40px 20px; }
+      h1 { font-size: 1.75rem; }
+    }
+  </style>
 </head>
 <body>
 
@@ -91,20 +98,22 @@
       <h1>Sign in to SiteGuide</h1>
       <p>Use your Google account to get started quickly and securely.</p>
 
-      <!-- Google Sign-In Button -->
-      <div id="g_id_onload"
-           data-client_id="659159677093-a4vuqj6okm6najh1ujpf27g5rn01b12g.apps.googleusercontent.com"
-           data-login_uri="https://site-guide.app/dashboard.html"
-           data-auto_prompt="false">
-      </div>
+      <!-- Google Sign-In Button Container -->
+      <div class="g-id-signin-container">
+        <div id="g_id_onload"
+             data-client_id="659159677093-a4vuqj6okm6najh1ujpf27g5rn01b12g.apps.googleusercontent.com"
+             data-login_uri="https://site-guide.app/dashboard.html"
+             data-auto_prompt="false">
+        </div>
 
-      <div class="g_id_signin"
-           data-type="standard"
-           data-size="large"
-           data-theme="outline"
-           data-text="sign_in_with"
-           data-shape="rectangular"
-           data-logo_alignment="left">
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="sign_in_with"
+             data-shape="rectangular"
+             data-logo_alignment="left">
+        </div>
       </div>
     </div>
   </div>
