@@ -649,7 +649,7 @@ function findAndScroll(anchor) {
 
         try {
             const clientId = currentScriptElement.getAttribute("client-id")
-            const response = await fetch("https://siteguidebackend.onrender.com/search", {
+            const response = await fetch("https://api.site-guide.app/search", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ query: query, clientId: clientId })
