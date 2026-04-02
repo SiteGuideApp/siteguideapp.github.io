@@ -656,6 +656,7 @@ function findAndScroll(anchor) {
             })
 
             if (!response.ok) {
+                console.log(response, clientId)
                 throw new Error("Network response was not ok")
             }
 
