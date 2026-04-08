@@ -149,7 +149,7 @@
             console.log("Google ID Token:", idToken);
 
             // Send token to backend
-            fetch("https://api.site-guide.app/auth/google/", {
+            fetch("https://api.site-guide.app/auth/google", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
