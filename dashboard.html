@@ -122,7 +122,11 @@
       try {
         const res = await fetch(`${API}/user`, { credentials: "include" });
         const data = await res.json();
-        if (!data.authenticated) { window.location.href="/login.html"; return null; }
+        if (!data.authenticated) {
+          console.log(res, data)
+          //window.location.href="/login.html";
+          return null;
+        }
         return data.user;
       } catch (err) { showStatus("Failed to verify session."); return null; }
     }
