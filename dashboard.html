@@ -1,149 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard – SiteGuide</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
-html, body { height:100%; }
-body { display:flex; flex-direction:column; background:#f9f9f9; color:#111; }
-header { display:flex; justify-content:space-between; align-items:center; background:#fff; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
-header h1 { font-size:2rem; }
-button { cursor:pointer; font-family:'Inter', sans-serif; }
-main { flex:1; padding:40px 20px; max-width:1000px; margin:0 auto; }
-h2 { font-size:1.75rem; color:#1a73e8; margin-bottom:20px; }
-table { width:100%; border-collapse:collapse; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.05); border-radius:8px; overflow:hidden; }
-th, td { padding:12px 16px; text-align:left; border-bottom:1px solid #eee; }
-tr:hover { background:#f1f8ff; cursor:pointer; }
-th { background:#f5f5f5; color:#1a73e8; }
-footer { margin-top:auto; text-align:center; padding:20px; font-size:0.85rem; color:#777; background:#f9f9f9; }
-.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:100; }
-.modal-content { background:#fff; padding:30px 25px; border-radius:12px; width:90%; max-width:450px; position:relative; }
-.modal-close { position:absolute; top:10px; right:10px; background:none; border:none; font-size:1.5rem; cursor:pointer; }
-.modal-content h3 { margin-bottom:10px; color:#1a73e8; }
-.modal-content p { margin-bottom:15px; color:#555; font-size:0.95rem; }
-.modal-content input, .modal-content select { width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; font-size:1rem; }
-.modal-content select option img { vertical-align:middle; margin-right:5px; border-radius:4px; }
-.modal-content button { background:#1a73e8; color:#fff; padding:10px 25px; border:none; border-radius:6px; font-size:1rem; display:block; margin:0 auto; }
-.create-dropdown { position:relative; display:inline-block; }
-.create-dropdown-content { display:none; position:absolute; right:0; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); border-radius:6px; overflow:hidden; }
-.create-dropdown-content button { display:block; width:100%; padding:10px 20px; border:none; background:#fff; color:#1a73e8; text-align:left; font-size:1rem; cursor:pointer; }
-.create-dropdown-content button:hover { background:#f1f8ff; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – SiteGuide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
+    html, body { height:100%; }
+    body { display:flex; flex-direction:column; background:#f9f9f9; color:#111; }
+    header { display:flex; justify-content:space-between; align-items:center; background:#fff; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
+    header h1 { font-size:2rem; }
+    button { cursor:pointer; transition:all 0.15s ease; font-family:'Inter', sans-serif; }
+    button:hover { transform:translateY(-1px); opacity:0.9; }
+
+    main { flex:1; padding:40px 20px; max-width:1000px; margin:0 auto; }
+    h2 { font-size:1.75rem; color:#1a73e8; margin-bottom:20px; }
+
+    table { width:100%; border-collapse:collapse; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.05); border-radius:8px; overflow:hidden; }
+    th, td { padding:12px 16px; text-align:left; border-bottom:1px solid #eee; }
+    tr:hover { background:#f1f8ff; cursor:pointer; }
+    th { background:#f5f5f5; color:#1a73e8; }
+    tr { opacity:0; transform:translateY(8px); animation:fadeInRow 0.4s ease forwards; }
+    @keyframes fadeInRow { to { opacity:1; transform:translateY(0); } }
+
+    footer { margin-top:auto; text-align:center; padding:20px; font-size:0.85rem; color:#777; }
+
+    /* Status toast */
+    .status { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-10px); background:#ffe5e5; color:#b00020; padding:12px 18px; border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.08); font-size:0.95rem; opacity:0; pointer-events:none; transition:all 0.35s ease; z-index:999; }
+    .status.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    /* Dropdown */
+    .create-dropdown { position:relative; }
+    .create-dropdown-content { position:absolute; right:0; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); border-radius:6px; overflow:hidden; opacity:0; transform:translateY(-10px); pointer-events:none; transition:all 0.2s ease; }
+    .create-dropdown-content.show { opacity:1; transform:translateY(0); pointer-events:auto; }
+    .create-dropdown-content button { display:block; width:100%; padding:10px 20px; border:none; background:#fff; color:#1a73e8; text-align:left; }
+    .create-dropdown-content button:hover { background:#f1f8ff; }
+
+    /* Modal */
+    .modal { display:flex; justify-content:center; align-items:center; position:fixed; inset:0; background:rgba(0,0,0,0.5); opacity:0; pointer-events:none; transition:opacity 0.25s ease; }
+    .modal.show { opacity:1; pointer-events:auto; }
+    .modal-content { background:#fff; padding:30px 25px; border-radius:12px; width:90%; max-width:450px; transform:scale(0.95); opacity:0; transition:all 0.25s ease; }
+    .modal.show .modal-content { transform:scale(1); opacity:1; }
+    .modal-close { position:absolute; top:10px; right:10px; background:none; border:none; font-size:1.5rem; cursor:pointer; }
+    .modal-content h3 { margin-bottom:10px; color:#1a73e8; }
+    .modal-content p { margin-bottom:15px; color:#555; font-size:0.95rem; }
+    .modal-content input, .modal-content select { width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; font-size:1rem; }
+    .modal-content select option img { vertical-align:middle; margin-right:5px; border-radius:4px; }
+    .modal-content button { background:#1a73e8; color:#fff; padding:10px 25px; border:none; border-radius:6px; font-size:1rem; display:block; margin:0 auto; }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <h1>SiteGuide Dashboard</h1>
-  <div class="create-dropdown">
-    <button id="createBtn" style="background:none; border:none; color:#1a73e8; font-size:1rem;">Create ▼</button>
-    <div class="create-dropdown-content" id="createDropdown">
-      <button id="redeemBtn">Redeem Code</button>
-      <button id="purchaseBtn">Purchase</button>
+  <div id="statusMessage" class="status"></div>
+
+  <header>
+    <h1>SiteGuide Dashboard</h1>
+    <div class="create-dropdown">
+      <button id="createBtn" style="background:none; border:none; color:#1a73e8;">Create ▼</button>
+      <div class="create-dropdown-content" id="createDropdown">
+        <button id="redeemBtn">Redeem Code</button>
+        <button id="purchaseBtn">Purchase</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <h2>Your Controlled Domains</h2>
+    <table id="domainsTable">
+      <thead>
+        <tr>
+          <th>Client ID</th>
+          <th>URL</th>
+          <th>Language</th>
+          <th>Ready</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <footer>
+    © 2026 SiteGuide. All rights reserved.
+  </footer>
+
+  <!-- Redeem Modal (fixed layout with labels & instructions) -->
+  <div class="modal" id="redeemModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeRedeemModal()">×</button>
+      <h3>Redeem a Site</h3>
+      <p>Enter your redeem code and desired site URL. Choose the language below. Currently only English 🇬🇧 is supported.</p>
+
+      <label for="redeemCodeInput">Redeem Code</label>
+      <input type="text" id="redeemCodeInput" placeholder="Enter your code">
+
+      <label for="siteUrlInput">Site URL</label>
+      <input type="text" id="siteUrlInput" placeholder="https://example.com">
+
+      <label for="languageSelect">Language</label>
+      <select id="languageSelect">
+        <option value="english">English 🇬🇧</option>
+      </select>
+
+      <button id="redeemSubmitBtn">Redeem</button>
     </div>
   </div>
-</header>
 
-<main>
-  <h2>Your Controlled Domains</h2>
-  <table id="domainsTable">
-    <thead>
-      <tr>
-        <th>Client ID</th>
-        <th>URL</th>
-        <th>Language</th>
-        <th>Ready</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Rows inserted dynamically -->
-    </tbody>
-  </table>
-</main>
+  <script>
+    const API = "https://api.site-guide.app";
 
-<footer>
-  © 2026 SiteGuide. All rights reserved.
-</footer>
-
-<!-- Modal for redeem code -->
-<div class="modal" id="redeemModal">
-  <div class="modal-content">
-    <button class="modal-close" onclick="closeRedeemModal()">×</button>
-    <h3>Redeem a Site</h3>
-    <p>Enter your redeem code and desired site URL. Choose the language below. Currently only English 🇬🇧 is supported.</p>
-    
-    <label for="redeemCodeInput">Redeem Code</label>
-    <input type="text" id="redeemCodeInput" placeholder="Enter your code">
-
-    <label for="siteUrlInput">Site URL</label>
-    <input type="text" id="siteUrlInput" placeholder="https://example.com">
-
-    <label for="languageSelect">Language</label>
-    <select id="languageSelect">
-      <option value="english">
-        <img src="https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/1f1ec-1f1e7.png" style="width:20px; height:14px; border-radius:3px; vertical-align:middle; margin-right:5px;"> English
-      </option>
-    </select>
-
-    <button id="redeemSubmitBtn">Redeem</button>
-  </div>
-</div>
-
-<script>
-function loadDomains(){
-  fetch("https://api.site-guide.app/sites", { credentials:'include' })
-  .then(res=>res.json())
-  .then(data=>{
-    const tbody = document.querySelector("#domainsTable tbody");
-    tbody.innerHTML="";
-    if(data.sites && data.sites.length>0){
-      data.sites.forEach(site=>{
-        const tr=document.createElement("tr");
-        tr.innerHTML=`<td>${site.clientId}</td><td>${site.url}</td><td>${site.language}</td><td>${site.ready?'✅':'❌'}</td>`;
-        tr.addEventListener("click", ()=>{ alert("Modal placeholder for details"); });
-        tbody.appendChild(tr);
-      });
-    } else {
-      tbody.innerHTML=`<tr><td colspan="4" style="text-align:center;">No sites yet.</td></tr>`;
+    function showStatus(message, duration = 3000) {
+      const el = document.getElementById("statusMessage");
+      el.innerText = message;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), duration);
     }
-  });
-}
-loadDomains();
 
-const createBtn = document.getElementById("createBtn");
-const createDropdown = document.getElementById("createDropdown");
-createBtn.addEventListener("click", ()=>{ createDropdown.style.display = createDropdown.style.display==="block"?"none":"block"; });
-window.addEventListener("click", e=>{ if(!createBtn.contains(e.target) && !createDropdown.contains(e.target)){ createDropdown.style.display="none"; } });
+    async function loadUser() {
+      try {
+        const res = await fetch(`${API}/user`, { credentials: "include" });
+        const data = await res.json();
+        if (!data.authenticated) { window.location.href="/login.html"; return null; }
+        return data.user;
+      } catch (err) { showStatus("Failed to verify session."); return null; }
+    }
 
-const redeemModal = document.getElementById("redeemModal");
-document.getElementById("redeemBtn").addEventListener("click", ()=>{
-  redeemModal.style.display="flex";
-  createDropdown.style.display="none";
-});
-function closeRedeemModal(){ redeemModal.style.display="none"; }
+    async function loadDomains() {
+      try {
+        const res = await fetch(`${API}/sites`, { credentials: "include" });
+        if (res.status===401) { window.location.href="/login.html"; return; }
+        const data = await res.json();
+        const tbody = document.querySelector("#domainsTable tbody");
+        tbody.innerHTML = "";
+        if (data.sites?.length) {
+          data.sites.forEach((site, i) => {
+            const tr = document.createElement("tr");
+            tr.style.animationDelay = `${i*0.05}s`;
+            tr.innerHTML = `<td>${site.clientId}</td><td>${site.url}</td><td>${site.language}</td><td>${site.ready?"✅":"❌"}</td>`;
+            tbody.appendChild(tr);
+          });
+        } else {
+          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No sites yet.</td></tr>`;
+        }
+      } catch(err){ showStatus("Failed to load sites."); }
+    }
 
-document.getElementById("redeemSubmitBtn").addEventListener("click", async ()=>{
-  const code = document.getElementById("redeemCodeInput").value.trim();
-  const url = document.getElementById("siteUrlInput").value.trim();
-  const language = document.getElementById("languageSelect").value;
+    const btn = document.getElementById("createBtn");
+    const dropdown = document.getElementById("createDropdown");
+    btn.onclick = () => dropdown.classList.toggle("show");
+    document.addEventListener("click", e => { if(!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove("show"); });
 
-  if(!code||!url){ alert("Code and URL are required."); return; }
+    function openRedeemModal(){ document.getElementById("redeemModal").classList.add("show"); }
+    function closeRedeemModal(){ document.getElementById("redeemModal").classList.remove("show"); }
+    document.getElementById("redeemBtn").onclick = openRedeemModal;
 
-  try{
-    const res=await fetch("https://api.site-guide.app/sites",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({ redeemCode:code, url:url, language:language }),
-      credentials:'include'
-    });
-    const data=await res.json();
-    if(data.success){ alert("Site created successfully!"); closeRedeemModal(); loadDomains(); }
-    else{ alert("Failed: "+(data.error||"Unknown error")); }
-  } catch(err){ alert("Error: "+err); }
-});
-</script>
+    (async ()=>{ const user=await loadUser(); if(user) await loadDomains(); })();
+  </script>
 
 </body>
 </html>
