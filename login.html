@@ -148,7 +148,6 @@
 
             console.log("Google ID Token:", idToken);
 
-            // Send token to backend
             fetch("https://api.site-guide.app/auth/google", {
                 method: "POST",
                 headers: {
@@ -160,8 +159,7 @@
                 .then(data => {
                     console.log("Login success:", data);
 
-                    // Example: redirect after login
-                    // window.location.href = "/dashboard";
+                    window.location.href = "https://site-guide.app/dashboard.html";
                 })
                 .catch(err => {
                     console.error("Login failed:", err);
