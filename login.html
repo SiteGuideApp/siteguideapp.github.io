@@ -154,6 +154,7 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({ token: idToken }),
+                credentials: "include"
             })
                 .then(res => res.json())
                 .then(data => {
