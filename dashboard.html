@@ -2,166 +2,736 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard – SiteGuide</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; font-family:'Inter', sans-serif; }
-    html, body { height:100%; }
-    body { display:flex; flex-direction:column; background:#f9f9f9; color:#111; }
-    header { display:flex; justify-content:space-between; align-items:center; background:#fff; padding:20px; box-shadow:0 2px 6px rgba(0,0,0,0.05); }
-    header h1 { font-size:2rem; }
-    button { cursor:pointer; transition:all 0.15s ease; font-family:'Inter', sans-serif; }
-    button:hover { transform:translateY(-1px); opacity:0.9; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – SiteGuide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif
+        }
 
-    main { flex:1; padding:40px 20px; max-width:1000px; margin:0 auto; }
-    h2 { font-size:1.75rem; color:#1a73e8; margin-bottom:20px; }
+        body {
+            background: #f4f7fb;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh
+        }
 
-    table { width:100%; border-collapse:collapse; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.05); border-radius:8px; overflow:hidden; }
-    th, td { padding:12px 16px; text-align:left; border-bottom:1px solid #eee; }
-    tr:hover { background:#f1f8ff; cursor:pointer; }
-    th { background:#f5f5f5; color:#1a73e8; }
-    tr { opacity:0; transform:translateY(8px); animation:fadeInRow 0.4s ease forwards; }
-    @keyframes fadeInRow { to { opacity:1; transform:translateY(0); } }
+        header {
+            padding: 20px;
+            text-align: center;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05)
+        }
 
-    footer { margin-top:auto; text-align:center; padding:20px; font-size:0.85rem; color:#777; }
+        .logo {
+            font-size: 2rem;
+            font-weight: 700
+        }
 
-    /* Status toast */
-    .status { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-10px); background:#ffe5e5; color:#b00020; padding:12px 18px; border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,0.08); font-size:0.95rem; opacity:0; pointer-events:none; transition:all 0.35s ease; z-index:999; }
-    .status.show { opacity:1; transform:translateX(-50%) translateY(0); }
+        .logoSite {
+            background: linear-gradient(135deg, #1a73e8, #4285f4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
 
-    /* Dropdown */
-    .create-dropdown { position:relative; }
-    .create-dropdown-content { position:absolute; right:0; background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.1); border-radius:6px; overflow:hidden; opacity:0; transform:translateY(-10px); pointer-events:none; transition:all 0.2s ease; }
-    .create-dropdown-content.show { opacity:1; transform:translateY(0); pointer-events:auto; }
-    .create-dropdown-content button { display:block; width:100%; padding:10px 20px; border:none; background:#fff; color:#1a73e8; text-align:left; }
-    .create-dropdown-content button:hover { background:#f1f8ff; }
+        .logoGuide {
+            background: linear-gradient(135deg, #fbb034, #ff8800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
 
-    /* Modal */
-    .modal { display:flex; justify-content:center; align-items:center; position:fixed; inset:0; background:rgba(0,0,0,0.5); opacity:0; pointer-events:none; transition:opacity 0.25s ease; }
-    .modal.show { opacity:1; pointer-events:auto; }
-    .modal-content { background:#fff; padding:30px 25px; border-radius:12px; width:90%; max-width:450px; transform:scale(0.95); opacity:0; transition:all 0.25s ease; }
-    .modal.show .modal-content { transform:scale(1); opacity:1; }
-    .modal-close { position:absolute; top:10px; right:10px; background:none; border:none; font-size:1.5rem; cursor:pointer; }
-    .modal-content h3 { margin-bottom:10px; color:#1a73e8; }
-    .modal-content p { margin-bottom:15px; color:#555; font-size:0.95rem; }
-    .modal-content input, .modal-content select { width:100%; padding:10px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; font-size:1rem; }
-    .modal-content select option img { vertical-align:middle; margin-right:5px; border-radius:4px; }
-    .modal-content button { background:#1a73e8; color:#fff; padding:10px 25px; border:none; border-radius:6px; font-size:1rem; display:block; margin:0 auto; }
-  </style>
+        main {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px
+        }
+
+        .sectionHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px
+        }
+
+        .createButton,
+        .configureButton,
+        .primaryBtn,
+        .secondaryBtn {
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            cursor: pointer;
+            transition: 0.15s
+        }
+
+        .createButton,
+        .configureButton,
+        .primaryBtn {
+            background: #1a73e8;
+            color: #fff
+        }
+
+        .secondaryBtn {
+            background: #fff;
+            color: #1a73e8;
+            border: 2px solid #1a73e8
+        }
+
+        .disabled {
+            background: #ddd !important;
+            color: #777 !important;
+            cursor: not-allowed
+        }
+
+        button:active {
+            transform: scale(0.95)
+        }
+
+        .tableCard table {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th,
+        td {
+            padding: 14px 16px
+        }
+
+        th {
+            background: #f7f9fc;
+            color: #1a73e8
+        }
+
+        tr {
+            border-bottom: 1px solid #eee
+        }
+
+        tr:hover {
+            background: #f1f8ff
+        }
+
+        a.domainLink {
+            color: #1a73e8;
+            text-decoration: none
+        }
+
+        a.domainLink:hover {
+            text-decoration: underline
+        }
+
+        .statusPill.ready {
+            color: #155724;
+            background: #d4edda;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600
+        }
+
+        .statusPill.notReady {
+            color: #721c24;
+            background: #f8d7da;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 600
+        }
+
+        /* Notifications */
+        .notifications {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none
+        }
+
+        .notification {
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: #fff;
+            min-width: 250px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: auto
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .notification.success {
+            background: #4cd964
+        }
+
+        .notification.error {
+            background: #ff3b30
+        }
+
+        .notification.info {
+            background: #1a73e8
+        }
+
+        /* Modals */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.25s;
+            z-index: 1000
+        }
+
+        .modal.show {
+            opacity: 1;
+            pointer-events: auto
+        }
+
+        .modalContent {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            transform: scale(0.95);
+            transition: 0.25s
+        }
+
+        .modal.show .modalContent {
+            transform: scale(1)
+        }
+
+        .modalClose {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border: none;
+            background: none;
+            font-size: 1.2rem;
+            cursor: pointer
+        }
+
+        /* Inputs & Flags */
+        .input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px
+        }
+
+        .flagSelect {
+            position: relative;
+            margin-top: 10px
+        }
+
+        .flagSelected {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #ccc;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer
+        }
+
+        .flagSelected img {
+            width: 24px;
+            height: 16px;
+            border-radius: 2px
+        }
+
+        .flagOptions {
+            position: absolute;
+            width: 100%;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-top: 5px;
+            display: none;
+            z-index: 10;
+            max-height: 150px;
+            overflow: auto
+        }
+
+        .flagOption {
+            padding: 6px 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            cursor: pointer
+        }
+
+        .flagOption img {
+            width: 24px;
+            height: 16px;
+            border-radius: 2px
+        }
+
+        .flagOption:hover {
+            background: #f1f8ff
+        }
+
+        /* Code snippet (VS Code Dark+ theme, wrapped lines) */
+        .codeBlock {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: Consolas, monospace;
+            white-space: pre-wrap;
+            word-break: break-word
+        }
+
+        .codeBlock .tag {
+            color: #569CD6
+        }
+
+        .codeBlock .attr {
+            color: #9CDCFE
+        }
+
+        .codeBlock .string {
+            color: #CE9178
+        }
+
+        .codeBlock .keyword {
+            color: #C586C0
+        }
+
+        .codeBlock .number {
+            color: #B5CEA8
+        }
+
+        /* Modal button sections */
+        .buttonRow {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px
+        }
+
+        .copyBtn {
+            background: #1a73e8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            cursor: pointer;
+            align-self: flex-start
+        }
+
+        /* Redeploy & Delete section */
+        .actionSection {
+            margin-top: 10px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            display: flex;
+            gap: 10px
+        }
+
+        .secondaryBtnSmall {
+            background: #fff;
+            color: #1a73e8;
+            border: 2px solid #1a73e8;
+            border-radius: 6px;
+            padding: 8px 14px;
+            cursor: pointer;
+            flex: 1
+        }
+
+        .secondaryBtnSmall:hover {
+            background: #f1f8ff
+        }
+
+        .deleteBtn {
+            background: #ff3b30;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            cursor: pointer;
+            flex: 1
+        }
+
+        #deleteConfirmSection {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 6px
+        }
+
+        #deleteConfirmInput {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 100%
+        }
+
+        #redeemSection {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+        }
+
+        #redeemSection input {
+            flex: 1;
+            height: 36px;
+            padding: 8px 10px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        #redeemSection .primaryBtn,
+        #redeemSection .secondaryBtn {
+            height: 36px;
+            padding: 0 12px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            margin-top: 8px;
+        }
+        #urlStatus {
+            margin-top: 5px;
+            font-weight: 500
+        }
+    </style>
 </head>
 
 <body>
+    <div class="notifications" id="notificationContainer"></div>
+    <header>
+        <div class="logo"><span class="logoSite">Site</span><span class="logoGuide">Guide</span></div>
+    </header>
 
-  <div id="statusMessage" class="status"></div>
+    <main>
+        <div class="sectionHeader">
+            <h2>Your Controlled Domains</h2>
+            <button class="createButton" onclick="openCreateModal()">Create</button>
+        </div>
+        <div class="tableCard">
+            <table>
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Language</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="domainsTable"></tbody>
+            </table>
+        </div>
+    </main>
 
-  <header>
-    <h1>SiteGuide Dashboard</h1>
-    <div class="create-dropdown">
-      <button id="createBtn" style="background:none; border:none; color:#1a73e8;">Create ▼</button>
-      <div class="create-dropdown-content" id="createDropdown">
-        <button id="redeemBtn">Redeem Code</button>
-        <button id="purchaseBtn">Purchase</button>
-      </div>
+    <!-- Create Modal -->
+    <div class="modal" id="createModal" onclick="outsideClose(event,'createModal')">
+        <div class="modalContent">
+            <button class="modalClose" onclick="closeModal('createModal')">×</button>
+            <h3>Setup Domain</h3>
+            <input id="urlInput" class="input" placeholder="https://example.com" onblur="validateUrl()">
+            <div id="urlStatus"></div>
+
+            <div class="flagSelect">
+                <div class="flagSelected" onclick="toggleFlags('create')">
+                    <img id="selectedFlag" src="">
+                    <span id="selectedLang"></span>
+                </div>
+                <div class="flagOptions" id="flagOptions"></div>
+            </div>
+
+            <div class="buttonRow">
+                <button class="primaryBtn disabled" id="purchaseBtn">Purchase</button>
+                <button class="secondaryBtn" onclick="toggleRedeemSection()">Redeem Code</button>
+            </div>
+
+            <div id="redeemSection">
+                <input id="redeemInput" class="input" placeholder="Enter code">
+                <button class="primaryBtn" onclick="createSite()">Submit</button>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <main>
-    <h2>Your Controlled Domains</h2>
-    <table id="domainsTable">
-      <thead>
-        <tr>
-          <th>Client ID</th>
-          <th>URL</th>
-          <th>Language</th>
-          <th>Ready</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </main>
+    <!-- Configure Modal -->
+    <div class="modal" id="configModal" onclick="outsideClose(event,'configModal')">
+        <div class="modalContent">
+            <button class="modalClose" onclick="closeModal('configModal')">×</button>
+            <h3>Configure Domain</h3>
 
-  <footer>
-    © 2026 SiteGuide. All rights reserved.
-  </footer>
+            <div class="flagSelect">
+                <div class="flagSelected" onclick="toggleFlags('config')">
+                    <img id="configSelectedFlag" src="">
+                    <span id="configSelectedLang"></span>
+                </div>
+                <div class="flagOptions" id="configFlagOptions"></div>
+            </div>
 
-  <!-- Redeem Modal (fixed layout with labels & instructions) -->
-  <div class="modal" id="redeemModal">
-    <div class="modal-content">
-      <button class="modal-close" onclick="closeRedeemModal()">×</button>
-      <h3>Redeem a Site</h3>
-      <p>Enter your redeem code and desired site URL. Choose the language below. Currently only English 🇬🇧 is supported.</p>
+            <div class="codeBlock" id="installCode"></div>
 
-      <label for="redeemCodeInput">Redeem Code</label>
-      <input type="text" id="redeemCodeInput" placeholder="Enter your code">
+            <div class="buttonRow">
+                <button class="copyBtn" onclick="copyCode()">Copy Code</button>
 
-      <label for="siteUrlInput">Site URL</label>
-      <input type="text" id="siteUrlInput" placeholder="https://example.com">
+                <div class="actionSection">
+                    <button class="secondaryBtnSmall" onclick="redeploy()">Redeploy</button>
+                    <button class="deleteBtn" onclick="showDeleteConfirm()">Delete</button>
+                </div>
 
-      <label for="languageSelect">Language</label>
-      <select id="languageSelect">
-        <option value="english">English 🇬🇧</option>
-      </select>
+                <div id="deleteConfirmSection">
+                    <p>Type the URL to confirm deletion:</p>
+                    <input id="deleteConfirmInput" placeholder="Type URL exactly">
+                    <button class="deleteBtn" onclick="confirmDelete()">Confirm Delete</button>
+                </div>
 
-      <button id="redeemSubmitBtn">Redeem</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    const API = "https://api.site-guide.app";
+    <script>
+        let selectedLanguage = "english";
+        let currentSiteId = null;
+        let configSite = null;
 
-    function showStatus(message, duration = 3000) {
-      const el = document.getElementById("statusMessage");
-      el.innerText = message;
-      el.classList.add("show");
-      setTimeout(() => el.classList.remove("show"), duration);
-    }
+        const flags = [
+            { val: "english", img: "https://flagpedia.net/data/flags/w1160/us.webp", name: "English" },
+            { val: "norwegian", img: "https://flagpedia.net/data/flags/w1160/no.webp", name: "Norwegian" }
+        ];
 
-    async function loadUser() {
-      try {
-        const res = await fetch(`${API}/user`, { credentials: "include" });
-        const data = await res.json();
-        if (!data.authenticated) {
-          console.log(res, data)
-          //window.location.href="/login.html";
-          return null;
+        function notify(message, type = "info") {
+            const container = document.getElementById("notificationContainer");
+            const div = document.createElement("div");
+            div.className = `notification ${type}`;
+            div.innerText = message;
+            container.appendChild(div);
+            requestAnimationFrame(() => div.classList.add("show"));
+            setTimeout(() => { div.classList.remove("show"); setTimeout(() => container.removeChild(div), 400) }, 3500);
         }
-        return data.user;
-      } catch (err) { showStatus("Failed to verify session."); return null; }
-    }
 
-    async function loadDomains() {
-      try {
-        const res = await fetch(`${API}/sites`, { credentials: "include" });
-        if (res.status===401) { window.location.href="/login.html"; return; }
-        const data = await res.json();
-        const tbody = document.querySelector("#domainsTable tbody");
-        tbody.innerHTML = "";
-        if (data.sites?.length) {
-          data.sites.forEach((site, i) => {
-            const tr = document.createElement("tr");
-            tr.style.animationDelay = `${i*0.05}s`;
-            tr.innerHTML = `<td>${site.clientId}</td><td>${site.url}</td><td>${site.language}</td><td>${site.ready?"✅":"❌"}</td>`;
-            tbody.appendChild(tr);
-          });
-        } else {
-          tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">No sites yet.</td></tr>`;
+        function toggleFlags(type) {
+            const el = document.getElementById(type === 'config' ? 'configFlagOptions' : 'flagOptions');
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
         }
-      } catch(err){ showStatus("Failed to load sites."); }
-    }
 
-    const btn = document.getElementById("createBtn");
-    const dropdown = document.getElementById("createDropdown");
-    btn.onclick = () => dropdown.classList.toggle("show");
-    document.addEventListener("click", e => { if(!btn.contains(e.target) && !dropdown.contains(e.target)) dropdown.classList.remove("show"); });
+        function populateFlags(type) {
+            const container = document.getElementById(type === 'config' ? 'configFlagOptions' : 'flagOptions');
+            container.innerHTML = "";
+            flags.forEach(f => {
+                const div = document.createElement("div");
+                div.className = "flagOption";
+                div.innerHTML = `<img src="${f.img}"> ${f.name}`;
+                div.onclick = () => { selectLangOption(type, f) };
+                container.appendChild(div);
+            });
+        }
 
-    function openRedeemModal(){ document.getElementById("redeemModal").classList.add("show"); }
-    function closeRedeemModal(){ document.getElementById("redeemModal").classList.remove("show"); }
-    document.getElementById("redeemBtn").onclick = openRedeemModal;
+        function selectLangOption(type, f) {
+            if (type === "create") {
+                selectedLanguage = f.val;
+                document.getElementById("selectedFlag").src = f.img;
+                document.getElementById("selectedLang").innerText = f.name;
+                document.getElementById("flagOptions").style.display = "none";
+            } else {
+                if (!configSite) return;
+                configSite.language = f.val;
+                document.getElementById("configSelectedFlag").src = f.img;
+                document.getElementById("configSelectedLang").innerText = f.name;
+                document.getElementById("configFlagOptions").style.display = "none";
+                renderInstallCode(configSite);
+            }
+        }
 
-    (async ()=>{ const user=await loadUser(); if(user) await loadDomains(); })();
-  </script>
+        function renderInstallCode(site) {
+            const html = `<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="string">"https://site-guide.app/widget.js"</span> <span class="attr">async</span> <span class="attr">client-id</span>=<span class="string">"${site.clientId}"</span> <span class="attr">theme</span>=<span class="string">"WarmOrange"</span><span class="tag">&gt;</span><span class="tag">&lt;/script&gt;</span>`;
+            document.getElementById("installCode").innerHTML = html;
+        }
 
+        function validateUrl() {
+            const url = document.getElementById("urlInput").value;
+            const status = document.getElementById("urlStatus");
+            try {
+                new URL(url);
+                status.innerText = "✔ URL valid";
+                status.style.color = "#34c759";
+            } catch {
+                status.innerText = "✖ Invalid URL";
+                status.style.color = "#ff3b30";
+            }
+        }
+
+        async function loadDomains() {
+            try {
+                const res = await fetch("https://api.site-guide.app/sites", { credentials: "include" });
+                const data = await res.json();
+                const table = document.getElementById("domainsTable");
+                table.innerHTML = "";
+
+                if (!data.sites || data.sites.length === 0) {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td colspan="4" style="
+                            text-align: center;
+                            color: #555;
+                            font-style: italic;
+                            padding: 12px 0;
+                        ">
+                            You have no registered domains
+                        </td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                        <td style="display:none;"></td>
+                    `;
+                    table.appendChild(tr);
+                    return;
+                }
+
+                data.sites.forEach(site => {
+                    const tr = document.createElement("tr");
+                    const flagImg = flags.find(f => f.val === site.language)?.img || flags[0].img;
+                    tr.innerHTML = `<td><a class="domainLink" href="${site.url}" target="_blank">${site.url}</a></td>
+                                    <td><img src="${flagImg}" style="width:24px;height:16px;vertical-align:middle;margin-right:6px">
+                                        ${site.language.charAt(0).toUpperCase() + site.language.slice(1)}</td>
+                                    <td><span class="statusPill ${site.ready ? 'ready' : 'notReady'}">
+                                        ${site.ready ? 'Ready' : 'Not Ready'}
+                                    </span></td>
+                                    <td><button class="configureButton" style="margin-left:8px;">Configure</button></td>`;
+                    tr.querySelector("button").onclick = e => { e.stopPropagation(); openConfigModal(site) };
+                    table.appendChild(tr);
+                });
+            } catch (err) {
+                notify("Failed to load domains", "error");
+            }
+        }
+
+        function openCreateModal() {
+            document.getElementById("createModal").classList.add("show");
+            // Hide redeem section by default
+            const redeemSection = document.getElementById("redeemSection");
+            redeemSection.style.display = "none";
+            document.getElementById("redeemInput").value = "";
+            populateFlags("create");
+            const f = flags.find(f => f.val === "english");
+            selectedLanguage = f.val;
+            document.getElementById("selectedFlag").src = f.img;
+            document.getElementById("selectedLang").innerText = f.name;
+        }
+
+        function toggleRedeemSection() {
+            const redeemSection = document.getElementById("redeemSection");
+            redeemSection.style.display = redeemSection.style.display === "flex" ? "none" : "flex";
+        }
+
+        function openConfigModal(site) {
+            currentSiteId = site.clientId;
+            configSite = site;
+            populateFlags("config");
+            const f = flags.find(f => f.val === site.language);
+            document.getElementById("configSelectedFlag").src = f.img;
+            document.getElementById("configSelectedLang").innerText = f.name;
+            document.getElementById("configModal").classList.add("show");
+            renderInstallCode(site);
+            document.getElementById("deleteConfirmSection").style.display = "none";
+            document.getElementById("deleteConfirmInput").value = "";
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove("show") }
+        function outsideClose(e, id) { if (e.target.id === id) closeModal(id) }
+
+        async function createSite() {
+            const url = document.getElementById("urlInput").value.trim();
+            const code = document.getElementById("redeemInput").value.trim() || undefined;
+
+            console.log(url, code)
+
+            if (!url) { notify("Please enter a URL", "error"); return }
+            try { new URL(url) } catch { notify("Invalid URL", "error"); return }
+
+            try {
+                const res = await fetch("https://api.site-guide.app/sites", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ url, language: selectedLanguage, code })
+                });
+                if (res.ok) {
+                    notify("Site created successfully", "success");
+                    closeModal("createModal");
+                    await loadDomains();
+                } else {
+                    const err = await res.json();
+                    notify(err.error || "Site creation failed", "error");
+                }
+            } catch (err) {
+                notify("Site creation error", "error");
+            }
+        }
+
+        async function redeploy() {
+            if (!configSite) return;
+            try {
+                const res = await fetch(`https://api.site-guide.app/sites/${configSite.clientId}/update`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ language: configSite.language })
+                });
+                if (res.ok) { notify("Redeploy successful", "success"); await loadDomains(); }
+                else notify("Redeploy failed", "error");
+            } catch (err) { notify("Redeploy error", "error") }
+        }
+
+        function showDeleteConfirm() {
+            document.getElementById("deleteConfirmSection").style.display = "flex";
+        }
+
+        async function confirmDelete() {
+            const typedUrl = document.getElementById("deleteConfirmInput").value;
+            if (!configSite) return;
+            if (typedUrl !== configSite.url) { notify("URL does not match. Deletion cancelled.", "error"); return; }
+            try {
+                const res = await fetch(`https://api.site-guide.app/sites/${configSite.clientId}`, { method: "DELETE", credentials: "include" });
+                if (res.ok) { notify("Deleted successfully", "success"); closeModal("configModal"); await loadDomains(); }
+                else notify("Delete failed", "error");
+            } catch (err) { notify("Delete error", "error") }
+        }
+
+        function copyCode() {
+            const code = document.getElementById("installCode").innerText;
+            navigator.clipboard.writeText(code);
+            notify("Code copied to clipboard", "success");
+        }
+
+        loadDomains();
+    </script>
 </body>
+
 </html>
