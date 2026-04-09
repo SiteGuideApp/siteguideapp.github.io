@@ -108,8 +108,11 @@
         }
 
         th,
-        td {
-            padding: 14px 16px
+        .tableCard td {
+            padding: 8px 12px;
+            text-align: left;
+            vertical-align: middle;
+            word-wrap: break-word;
         }
 
         th {
@@ -578,6 +581,7 @@
         function validateUrl() {
             const url = document.getElementById("urlInput").value;
             const status = document.getElementById("urlStatus");
+
             try {
                 new URL(url);
                 status.innerText = "✔ URL valid";
@@ -718,7 +722,12 @@
             if (!configSite) return;
             if (typedUrl !== configSite.url) { notify("URL does not match. Deletion cancelled.", "error"); return; }
             try {
-                const res = await fetch(`https://api.site-guide.app/sites/${configSite.clientId}`, { method: "DELETE", credentials: "include" });
+                const res = await fetch(`https://api.site-guide.app/sites/${configSite.clientId}`, {
+                    method: "DELETE",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ confirmUrl: configSite.url })
+                });
                 if (res.ok) { notify("Deleted successfully", "success"); closeModal("configModal"); await loadDomains(); }
                 else notify("Delete failed", "error");
             } catch (err) { notify("Delete error", "error") }
