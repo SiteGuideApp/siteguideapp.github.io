@@ -530,6 +530,23 @@
             { val: "norwegian", img: "https://flagpedia.net/data/flags/w1160/no.webp", name: "Norwegian" }
         ];
 
+        function getAuthToken() {
+            return localStorage.getItem("authToken");
+        }
+        
+        function authHeaders() {
+            const token = getAuthToken();
+        
+            if (!token) return {
+                "Content-Type": "application/json"
+            };
+        
+            return {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            };
+        }
+
         function notify(message, type = "info") {
             const container = document.getElementById("notificationContainer");
             const div = document.createElement("div");
@@ -594,20 +611,19 @@
 
         async function loadDomains() {
             try {
-                const res = await fetch("https://api.site-guide.app/sites", { credentials: "include" });
+                const res = await fetch("https://api.site-guide.app/sites", {
+                    method: "GET",
+                    headers: authHeaders()
+                });
+        
                 const data = await res.json();
                 const table = document.getElementById("domainsTable");
                 table.innerHTML = "";
-
+        
                 if (!data.sites || data.sites.length === 0) {
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
-                        <td colspan="4" style="
-                            text-align: center;
-                            color: #555;
-                            font-style: italic;
-                            padding: 12px 0;
-                        ">
+                        <td colspan="4" style="text-align:center;color:#555;font-style:italic;padding:12px 0;">
                             You have no registered domains
                         </td>
                         <td style="display:none;"></td>
@@ -617,20 +633,33 @@
                     table.appendChild(tr);
                     return;
                 }
-
+        
                 data.sites.forEach(site => {
                     const tr = document.createElement("tr");
                     const flagImg = flags.find(f => f.val === site.language)?.img || flags[0].img;
-                    tr.innerHTML = `<td><a class="domainLink" href="${site.url}" target="_blank">${site.url}</a></td>
-                                    <td><img src="${flagImg}" style="width:24px;height:16px;vertical-align:middle;margin-right:6px">
-                                        ${site.language.charAt(0).toUpperCase() + site.language.slice(1)}</td>
-                                    <td><span class="statusPill ${site.ready ? 'ready' : 'notReady'}">
-                                        ${site.ready ? 'Ready' : 'Not Ready'}
-                                    </span></td>
-                                    <td><button class="configureButton" style="margin-left:8px;">Configure</button></td>`;
-                    tr.querySelector("button").onclick = e => { e.stopPropagation(); openConfigModal(site) };
+        
+                    tr.innerHTML = `
+                        <td><a class="domainLink" href="${site.url}" target="_blank">${site.url}</a></td>
+                        <td>
+                            <img src="${flagImg}" style="width:24px;height:16px;vertical-align:middle;margin-right:6px">
+                            ${site.language.charAt(0).toUpperCase() + site.language.slice(1)}
+                        </td>
+                        <td>
+                            <span class="statusPill ${site.ready ? 'ready' : 'notReady'}">
+                                ${site.ready ? 'Ready' : 'Not Ready'}
+                            </span>
+                        </td>
+                        <td><button class="configureButton" style="margin-left:8px;">Configure</button></td>
+                    `;
+        
+                    tr.querySelector("button").onclick = e => {
+                        e.stopPropagation();
+                        openConfigModal(site);
+                    };
+        
                     table.appendChild(tr);
                 });
+        
             } catch (err) {
                 notify("Failed to load domains", "error");
             }
@@ -673,27 +702,40 @@
         async function createSite() {
             const url = document.getElementById("urlInput").value.trim();
             const code = document.getElementById("redeemInput").value.trim() || undefined;
-
-            console.log(url, code)
-
-            if (!url) { notify("Please enter a URL", "error"); return }
-            try { new URL(url) } catch { notify("Invalid URL", "error"); return }
-
+        
+            if (!url) {
+                notify("Please enter a URL", "error");
+                return;
+            }
+        
+            try {
+                new URL(url);
+            } catch {
+                notify("Invalid URL", "error");
+                return;
+            }
+        
             try {
                 const res = await fetch("https://api.site-guide.app/sites", {
                     method: "POST",
-                    credentials: "include",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ url, language: selectedLanguage, code })
+                    headers: authHeaders(),
+                    body: JSON.stringify({
+                        url,
+                        language: selectedLanguage,
+                        code
+                    })
                 });
+        
+                const data = await res.json();
+        
                 if (res.ok) {
                     notify("Site created successfully", "success");
                     closeModal("createModal");
                     await loadDomains();
                 } else {
-                    const err = await res.json();
-                    notify(err.error || "Site creation failed", "error");
+                    notify(data.error || "Site creation failed", "error");
                 }
+        
             } catch (err) {
                 notify("Site creation error", "error");
             }
@@ -701,16 +743,29 @@
 
         async function redeploy() {
             if (!configSite) return;
+        
             try {
-                const res = await fetch(`https://api.site-guide.app/sites/${configSite.clientId}/update`, {
-                    method: "POST",
-                    credentials: "include",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ language: configSite.language })
-                });
-                if (res.ok) { notify("Redeploy successful", "success"); await loadDomains(); }
-                else notify("Redeploy failed", "error");
-            } catch (err) { notify("Redeploy error", "error") }
+                const res = await fetch(
+                    `https://api.site-guide.app/sites/${configSite.clientId}/update`,
+                    {
+                        method: "POST",
+                        headers: authHeaders(),
+                        body: JSON.stringify({
+                            language: configSite.language
+                        })
+                    }
+                );
+        
+                if (res.ok) {
+                    notify("Redeploy successful", "success");
+                    await loadDomains();
+                } else {
+                    notify("Redeploy failed", "error");
+                }
+        
+            } catch (err) {
+                notify("Redeploy error", "error");
+            }
         }
 
         function showDeleteConfirm() {
@@ -719,18 +774,37 @@
 
         async function confirmDelete() {
             const typedUrl = document.getElementById("deleteConfirmInput").value;
+        
             if (!configSite) return;
-            if (typedUrl !== configSite.url) { notify("URL does not match. Deletion cancelled.", "error"); return; }
+        
+            if (typedUrl !== configSite.url) {
+                notify("URL does not match. Deletion cancelled.", "error");
+                return;
+            }
+        
             try {
-                const res = await fetch(`https://api.site-guide.app/sites/${configSite.clientId}`, {
-                    method: "DELETE",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({ confirmUrl: configSite.url })
-                });
-                if (res.ok) { notify("Deleted successfully", "success"); closeModal("configModal"); await loadDomains(); }
-                else notify("Delete failed", "error");
-            } catch (err) { notify("Delete error", "error") }
+                const res = await fetch(
+                    `https://api.site-guide.app/sites/${configSite.clientId}`,
+                    {
+                        method: "DELETE",
+                        headers: authHeaders(),
+                        body: JSON.stringify({
+                            confirmUrl: configSite.url
+                        })
+                    }
+                );
+        
+                if (res.ok) {
+                    notify("Deleted successfully", "success");
+                    closeModal("configModal");
+                    await loadDomains();
+                } else {
+                    notify("Delete failed", "error");
+                }
+        
+            } catch (err) {
+                notify("Delete error", "error");
+            }
         }
 
         function copyCode() {
