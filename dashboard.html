@@ -746,9 +746,9 @@
         
             try {
                 const res = await fetch(
-                    `https://api.site-guide.app/sites/${configSite.clientId}/update`,
+                    `https://api.site-guide.app/sites/${configSite.clientId}`,
                     {
-                        method: "POST",
+                        method: "PATCH",
                         headers: authHeaders(),
                         body: JSON.stringify({
                             language: configSite.language
@@ -760,7 +760,8 @@
                     notify("Redeploy successful", "success");
                     await loadDomains();
                 } else {
-                    notify("Redeploy failed", "error");
+                    const err = await res.json().catch(() => ({}));
+                    notify(err.error || "Redeploy failed", "error");
                 }
         
             } catch (err) {
