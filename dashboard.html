@@ -631,6 +631,8 @@
                 const table = document.getElementById("domainsTable");
                 table.innerHTML = "";
     
+                let hasPending = false;
+    
                 if (!data.sites || data.sites.length === 0) {
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
@@ -642,12 +644,16 @@
                         <td style="display:none;"></td>
                     `;
                     table.appendChild(tr);
-                    return;
+                    return false;
                 }
     
                 data.sites.forEach(site => {
                     const tr = document.createElement("tr");
                     const flagImg = flags.find(f => f.val === site.language)?.img || flags[0].img;
+    
+                    if (!site.ready) {
+                        hasPending = true;
+                    }
     
                     tr.innerHTML = `
                         <td><a class="domainLink" href="${site.url}" target="_blank">${site.url}</a></td>
@@ -671,17 +677,25 @@
                     table.appendChild(tr);
                 });
     
+                return hasPending;
+    
             } catch (err) {
                 notify("Failed to load domains", "error");
+                return false;
             }
         }
     
         function startPolling() {
             if (pollInterval) clearInterval(pollInterval);
     
-            pollInterval = setInterval(() => {
+            pollInterval = setInterval(async () => {
                 if (!isPolling) return;
-                loadDomains();
+    
+                const hasPending = await loadDomains();
+    
+                if (!hasPending) {
+                    stopPolling();
+                }
             }, 1000);
         }
     
@@ -775,6 +789,7 @@
                     notify("Site created successfully", "success");
                     closeModal("createModal");
                     await loadDomains();
+                    startPolling();
                 } else {
                     notify(data.error || "Site creation failed", "error");
                 }
@@ -816,6 +831,7 @@
                 if (redeployRes.ok) {
                     notify("Redeploy started", "success");
                     await loadDomains();
+                    startPolling();
                 } else {
                     const err = await redeployRes.json().catch(() => ({}));
                     notify(err.error || "Redeploy failed", "error");
@@ -871,8 +887,9 @@
             notify("Code copied to clipboard", "success");
         }
     
-        loadDomains();
-        startPolling();
+        loadDomains().then(hasPending => {
+            if (hasPending) startPolling();
+        });
     </script>
 </body>
 
