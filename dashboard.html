@@ -524,56 +524,65 @@
         let selectedLanguage = "english";
         let currentSiteId = null;
         let configSite = null;
-
+    
+        let pollInterval = null;
+        let isPolling = true;
+    
         const flags = [
             { val: "english", img: "https://flagpedia.net/data/flags/w1160/us.webp", name: "English" },
             { val: "norwegian", img: "https://flagpedia.net/data/flags/w1160/no.webp", name: "Norwegian" }
         ];
-
+    
         function getAuthToken() {
             return localStorage.getItem("authToken");
         }
-        
+    
         function authHeaders() {
             const token = getAuthToken();
-        
+    
             if (!token) return {
                 "Content-Type": "application/json"
             };
-        
+    
             return {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             };
         }
-
+    
         function notify(message, type = "info") {
             const container = document.getElementById("notificationContainer");
             const div = document.createElement("div");
             div.className = `notification ${type}`;
             div.innerText = message;
             container.appendChild(div);
+    
             requestAnimationFrame(() => div.classList.add("show"));
-            setTimeout(() => { div.classList.remove("show"); setTimeout(() => container.removeChild(div), 400) }, 3500);
+    
+            setTimeout(() => {
+                div.classList.remove("show");
+                setTimeout(() => container.removeChild(div), 400);
+            }, 3500);
         }
-
+    
         function toggleFlags(type) {
             const el = document.getElementById(type === 'config' ? 'configFlagOptions' : 'flagOptions');
             el.style.display = el.style.display === 'block' ? 'none' : 'block';
         }
-
+    
         function populateFlags(type) {
             const container = document.getElementById(type === 'config' ? 'configFlagOptions' : 'flagOptions');
             container.innerHTML = "";
+    
             flags.forEach(f => {
                 const div = document.createElement("div");
                 div.className = "flagOption";
                 div.innerHTML = `<img src="${f.img}"> ${f.name}`;
-                div.onclick = () => { selectLangOption(type, f) };
+                div.onclick = () => selectLangOption(type, f);
                 container.appendChild(div);
             });
         }
-
+    
         function selectLangOption(type, f) {
             if (type === "create") {
                 selectedLanguage = f.val;
@@ -582,23 +591,25 @@
                 document.getElementById("flagOptions").style.display = "none";
             } else {
                 if (!configSite) return;
+    
                 configSite.language = f.val;
                 document.getElementById("configSelectedFlag").src = f.img;
                 document.getElementById("configSelectedLang").innerText = f.name;
                 document.getElementById("configFlagOptions").style.display = "none";
+    
                 renderInstallCode(configSite);
             }
         }
-
+    
         function renderInstallCode(site) {
             const html = `<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="string">"https://site-guide.app/widget.js"</span> <span class="attr">async</span> <span class="attr">client-id</span>=<span class="string">"${site.clientId}"</span> <span class="attr">theme</span>=<span class="string">"WarmOrange"</span><span class="tag">&gt;</span><span class="tag">&lt;/script&gt;</span>`;
             document.getElementById("installCode").innerHTML = html;
         }
-
+    
         function validateUrl() {
             const url = document.getElementById("urlInput").value;
             const status = document.getElementById("urlStatus");
-
+    
             try {
                 new URL(url);
                 status.innerText = "✔ URL valid";
@@ -608,18 +619,18 @@
                 status.style.color = "#ff3b30";
             }
         }
-
+    
         async function loadDomains() {
             try {
                 const res = await fetch("https://api.site-guide.app/sites", {
                     method: "GET",
                     headers: authHeaders()
                 });
-        
+    
                 const data = await res.json();
                 const table = document.getElementById("domainsTable");
                 table.innerHTML = "";
-        
+    
                 if (!data.sites || data.sites.length === 0) {
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
@@ -633,11 +644,11 @@
                     table.appendChild(tr);
                     return;
                 }
-        
+    
                 data.sites.forEach(site => {
                     const tr = document.createElement("tr");
                     const flagImg = flags.find(f => f.val === site.language)?.img || flags[0].img;
-        
+    
                     tr.innerHTML = `
                         <td><a class="domainLink" href="${site.url}" target="_blank">${site.url}</a></td>
                         <td>
@@ -651,70 +662,102 @@
                         </td>
                         <td><button class="configureButton" style="margin-left:8px;">Configure</button></td>
                     `;
-        
+    
                     tr.querySelector("button").onclick = e => {
                         e.stopPropagation();
                         openConfigModal(site);
                     };
-        
+    
                     table.appendChild(tr);
                 });
-        
+    
             } catch (err) {
                 notify("Failed to load domains", "error");
             }
         }
-
+    
+        function startPolling() {
+            if (pollInterval) clearInterval(pollInterval);
+    
+            pollInterval = setInterval(() => {
+                if (!isPolling) return;
+                loadDomains();
+            }, 5000);
+        }
+    
+        function stopPolling() {
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = null;
+        }
+    
+        document.addEventListener("visibilitychange", () => {
+            isPolling = !document.hidden;
+        });
+    
         function openCreateModal() {
             document.getElementById("createModal").classList.add("show");
-            // Hide redeem section by default
+    
             const redeemSection = document.getElementById("redeemSection");
             redeemSection.style.display = "none";
             document.getElementById("redeemInput").value = "";
+    
             populateFlags("create");
+    
             const f = flags.find(f => f.val === "english");
             selectedLanguage = f.val;
+    
             document.getElementById("selectedFlag").src = f.img;
             document.getElementById("selectedLang").innerText = f.name;
         }
-
+    
         function toggleRedeemSection() {
             const redeemSection = document.getElementById("redeemSection");
             redeemSection.style.display = redeemSection.style.display === "flex" ? "none" : "flex";
         }
-
+    
         function openConfigModal(site) {
             currentSiteId = site.clientId;
             configSite = site;
+    
             populateFlags("config");
+    
             const f = flags.find(f => f.val === site.language);
+    
             document.getElementById("configSelectedFlag").src = f.img;
             document.getElementById("configSelectedLang").innerText = f.name;
+    
             document.getElementById("configModal").classList.add("show");
+    
             renderInstallCode(site);
+    
             document.getElementById("deleteConfirmSection").style.display = "none";
             document.getElementById("deleteConfirmInput").value = "";
         }
-
-        function closeModal(id) { document.getElementById(id).classList.remove("show") }
-        function outsideClose(e, id) { if (e.target.id === id) closeModal(id) }
-
+    
+        function closeModal(id) {
+            document.getElementById(id).classList.remove("show");
+        }
+    
+        function outsideClose(e, id) {
+            if (e.target.id === id) closeModal(id);
+        }
+    
         async function createSite() {
             const url = document.getElementById("urlInput").value.trim();
             const code = document.getElementById("redeemInput").value.trim() || undefined;
-        
+    
             if (!url) {
                 notify("Please enter a URL", "error");
                 return;
             }
-        
+    
             try {
                 new URL(url);
             } catch {
                 notify("Invalid URL", "error");
                 return;
             }
-        
+    
             try {
                 const res = await fetch("https://api.site-guide.app/sites", {
                     method: "POST",
@@ -725,9 +768,9 @@
                         code
                     })
                 });
-        
+    
                 const data = await res.json();
-        
+    
                 if (res.ok) {
                     notify("Site created successfully", "success");
                     closeModal("createModal");
@@ -735,15 +778,15 @@
                 } else {
                     notify(data.error || "Site creation failed", "error");
                 }
-        
-            } catch (err) {
+    
+            } catch {
                 notify("Site creation error", "error");
             }
         }
-
+    
         async function redeploy() {
             if (!configSite) return;
-        
+    
             try {
                 const updateRes = await fetch(
                     `https://api.site-guide.app/sites/${configSite.clientId}`,
@@ -755,13 +798,13 @@
                         })
                     }
                 );
-        
+    
                 if (!updateRes.ok) {
                     const err = await updateRes.json().catch(() => ({}));
                     notify(err.error || "Update failed", "error");
                     return;
                 }
-        
+    
                 const redeployRes = await fetch(
                     `https://api.site-guide.app/sites/${configSite.clientId}/redeploy`,
                     {
@@ -769,7 +812,7 @@
                         headers: authHeaders()
                     }
                 );
-        
+    
                 if (redeployRes.ok) {
                     notify("Redeploy started", "success");
                     await loadDomains();
@@ -777,26 +820,26 @@
                     const err = await redeployRes.json().catch(() => ({}));
                     notify(err.error || "Redeploy failed", "error");
                 }
-        
-            } catch (err) {
+    
+            } catch {
                 notify("Redeploy error", "error");
             }
         }
-
+    
         function showDeleteConfirm() {
             document.getElementById("deleteConfirmSection").style.display = "flex";
         }
-
+    
         async function confirmDelete() {
             const typedUrl = document.getElementById("deleteConfirmInput").value;
-        
+    
             if (!configSite) return;
-        
+    
             if (typedUrl !== configSite.url) {
                 notify("URL does not match. Deletion cancelled.", "error");
                 return;
             }
-        
+    
             try {
                 const res = await fetch(
                     `https://api.site-guide.app/sites/${configSite.clientId}`,
@@ -808,7 +851,7 @@
                         })
                     }
                 );
-        
+    
                 if (res.ok) {
                     notify("Deleted successfully", "success");
                     closeModal("configModal");
@@ -816,19 +859,20 @@
                 } else {
                     notify("Delete failed", "error");
                 }
-        
-            } catch (err) {
+    
+            } catch {
                 notify("Delete error", "error");
             }
         }
-
+    
         function copyCode() {
             const code = document.getElementById("installCode").innerText;
             navigator.clipboard.writeText(code);
             notify("Code copied to clipboard", "success");
         }
-
+    
         loadDomains();
+        startPolling();
     </script>
 </body>
 
