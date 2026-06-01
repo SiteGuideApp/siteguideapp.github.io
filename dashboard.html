@@ -745,7 +745,7 @@
             if (!configSite) return;
         
             try {
-                const res = await fetch(
+                const updateRes = await fetch(
                     `https://api.site-guide.app/sites/${configSite.clientId}`,
                     {
                         method: "PATCH",
@@ -756,11 +756,25 @@
                     }
                 );
         
-                if (res.ok) {
-                    notify("Redeploy successful", "success");
+                if (!updateRes.ok) {
+                    const err = await updateRes.json().catch(() => ({}));
+                    notify(err.error || "Update failed", "error");
+                    return;
+                }
+        
+                const redeployRes = await fetch(
+                    `https://api.site-guide.app/sites/${configSite.clientId}/redeploy`,
+                    {
+                        method: "POST",
+                        headers: authHeaders()
+                    }
+                );
+        
+                if (redeployRes.ok) {
+                    notify("Redeploy started", "success");
                     await loadDomains();
                 } else {
-                    const err = await res.json().catch(() => ({}));
+                    const err = await redeployRes.json().catch(() => ({}));
                     notify(err.error || "Redeploy failed", "error");
                 }
         
